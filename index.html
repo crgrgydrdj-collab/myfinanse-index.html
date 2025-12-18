@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MyFinanse</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root{
+      --bg:#0b0c10;
+      --card:#141725;
+      --card2:#1b2032;
+      --ink:#f3f4f8;
+      --muted:#a2a8bd;
+      --border:rgba(255,255,255,.08);
+      --accent:#6c6cff;
+      --good:#2dd97b;
+      --bad:#ff5b6b;
+      --radius:18px;
+      --shadow: 0 24px 70px rgba(0,0,0,.55);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 600px at 12% -10%, rgba(108,108,255,.26), transparent 60%),
+        radial-gradient(700px 500px at 90% 10%, rgba(45,217,123,.14), transparent 55%),
+        radial-gradient(700px 700px at 50% 120%, rgba(255,255,255,.06), transparent 60%),
+        var(--bg);
+    }
+    .wrap{max-width:740px;margin:0 auto;padding:16px}
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      border-radius: calc(var(--radius) + 4px);
+      box-shadow: var(--shadow);
+      padding:16px;
+      overflow:hidden;
+    }
+    .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+    .brand{display:flex;flex-direction:column;gap:6px}
+    .titleRow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    h1{margin:0;font-size:20px;letter-spacing:.2px}
+    .sub{margin:0;color:var(--muted);font-size:12px;line-height:1.25}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(108,108,255,.25);
+      background: rgba(108,108,255,.14);
+      color:#e7e7ff;
+      font-weight:900;
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .pill.proOn{
+      border:1px solid rgba(45,217,123,.25);
+      background: rgba(45,217,123,.14);
+      color:#dfffee;
+    }
+
+    select,input,button{
+      width:100%;
+      border-radius:14px;
+      border:1px solid var(--border);
+      padding:12px;
+      font-size:16px;
+      background: var(--card2);
+      color: var(--ink);
+    }
+    input::placeholder{color:rgba(162,168,189,.6)}
+    input:focus, select:focus{
+      outline:none;
+      border-color: rgba(108,108,255,.35);
+      box-shadow: 0 0 0 3px rgba(108,108,255,.14);
+    }
+    .langSel{max-width:86px}
+
+    .section{
+      margin-top:12px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      border-radius: 16px;
+      padding:12px;
+    }
+    .sectionTitle{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      margin:0 0 10px;
+      font-weight: 950;
+      letter-spacing: .2px;
+      font-size: 13px;
+      color: #e9ebf6;
+    }
+    .hint{font-size:12px;color:var(--muted);line-height:1.35}
+
+    .balanceGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+    }
+    .miniCard{
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius: 14px;
+      padding:12px;
+    }
+    .miniLabel{font-size:12px;color:var(--muted)}
+    .miniValue{font-size:18px;font-weight:950;margin-top:6px}
+    .good{color:var(--good)}
+    .bad{color:var(--bad)}
+
+    .seg{
+      display:flex;gap:8px;
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius: 16px;
+      padding:6px;
+    }
+    .seg button{
+      border:none;
+      background: transparent;
+      color: var(--muted);
+      font-weight:950;
+      padding:10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      transition: transform .08s ease, background .18s ease, color .18s ease;
+    }
+    .seg button:active{transform:scale(.99)}
+    .seg .active{
+      background: linear-gradient(180deg, rgba(108,108,255,.38), rgba(108,108,255,.16));
+      color: var(--ink);
+      border: 1px solid rgba(108,108,255,.25);
+    }
+
+    .grid{display:grid;gap:10px}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    label{font-size:12px;color:var(--muted);display:block;margin:2px 0 6px}
+
+    .primary{
+      border:none;
+      border-radius: 16px;
+      padding:14px;
+      font-weight: 950;
+      background: linear-gradient(180deg, rgba(108,108,255,1), rgba(108,108,255,.75));
+      box-shadow: 0 16px 34px rgba(108,108,255,.23);
+      cursor:pointer;
+      transition: transform .08s ease, filter .12s ease;
+    }
+    .primary:active{transform:scale(.99);filter:brightness(.98)}
+
+    .ghost{
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      font-weight:950;
+      cursor:pointer;
+    }
+
+    .list{display:grid;gap:8px}
+    .item{
+      display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius: 14px;
+      padding:12px;
+    }
+    .itemLeft{display:flex;flex-direction:column;gap:6px}
+    .itemTop{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .tag{
+      display:inline-flex;align-items:center;
+      font-size:12px;font-weight:900;
+      padding:4px 8px;border-radius:999px;
+      background: rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.08);
+      color:#e9ebf6;
+    }
+    .date{font-size:12px;color:var(--muted)}
+    .note{font-size:12px;color:var(--muted)}
+    .amt{font-weight:950;font-size:16px;white-space:nowrap}
+
+    .toolsRow{display:flex;gap:10px;flex-wrap:wrap}
+    .toolsRow > *{flex:1}
+
+    .proBox{display:none}
+    .proLock{
+      display:grid;gap:10px;
+      padding:12px;border-radius:14px;
+      border:1px dashed rgba(255,255,255,.22);
+      background: rgba(0,0,0,.12);
+    }
+    .msg{font-size:12px}
+    .ok{color:var(--good);font-weight:950}
+    .err{color:var(--bad);font-weight:950}
+
+    .barWrap{
+      margin-top:10px;
+      display:none;
+      gap:10px;
+    }
+    .bar{
+      height:14px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: 999px;
+      overflow:hidden;
+    }
+    .bar > div{height:100%}
+    .barLegend{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+    .footerNote{
+      margin-top:12px;
+      font-size:12px;
+      color:var(--muted);
+      text-align:center;
+    }
+    .linkStrong{color:#e7e7ff;font-weight:950}
+
+    @media (max-width:560px){
+      .balanceGrid{grid-template-columns:1fr;gap:8px}
+      .row2{grid-template-columns:1fr}
+      .toolsRow{flex-direction:column}
+      .toolsRow > *{flex:auto}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+
+      <div class="top">
+        <div class="brand">
+          <div class="titleRow">
+            <h1 id="uiTitle">💰 MyFinanse</h1>
+            <span class="pill" id="modePill">BASE</span>
+          </div>
+          <p class="sub" id="uiSub">Track income & expenses — simple and private.</p>
+        </div>
+
+        <select id="lang" class="langSel">
+          <option value="en">EN</option>
+          <option value="ru">RU</option>
+        </select>
+      </div>
+
+      <!-- BALANCE -->
+      <div class="section">
+        <div class="sectionTitle">
+          <span id="sBal">Balance</span>
+          <span class="pill" id="currencyPill">$</span>
+        </div>
+
+        <div class="balanceGrid">
+          <div class="miniCard">
+            <div class="miniLabel" id="lEarned">Earned</div>
+            <div class="miniValue good" id="earnedVal">$0.00</div>
+          </div>
+          <div class="miniCard">
+            <div class="miniLabel" id="lSpent">Spent</div>
+            <div class="miniValue bad" id="spentVal">$0.00</div>
+          </div>
+          <div class="miniCard">
+            <div class="miniLabel" id="lLeft">Left</div>
+            <div class="miniValue" id="leftVal">$0.00</div>
+          </div>
+        </div>
+
+        <div class="hint" id="balHint" style="margin-top:10px">
+          Your data is stored only on your device.
+        </div>
+      </div>
+
+      <!-- ADD TRANSACTION -->
+      <div class="section">
+        <div class="sectionTitle">
+          <span id="sAdd">Add transaction</span>
+          <span class="pill" id="proMiniPill">PRO</span>
+        </div>
+
+        <div class="seg" style="margin-bottom:10px">
+          <button id="incomeBtn" type="button" class="active">Income</button>
+          <button id="expenseBtn" type="button">Expense</button>
+        </div>
+
+        <div class="grid">
+          <div class="row2">
+            <div>
+              <label id="lAmount" for="amount">Amount</label>
+              <input id="amount" type="number" inputmode="decimal" placeholder="0" />
+            </div>
+            <div>
+              <label id="lCurrency" for="currency">Currency</label>
+              <select id="currency">
+                <option value="$">$ USD</option>
+                <option value="€">€ EUR</option>
+                <option value="₽">₽ RUB</option>
+                <option value="₮">₮ USDT</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row2">
+            <div>
+              <label id="lCategory" for="category">Category</label>
+              <select id="category"></select>
+            </div>
+            <div>
+              <label id="lDate" for="date">Date</label>
+              <input id="date" type="date" />
+            </div>
+          </div>
+
+          <div>
+            <label id="lNote" for="note">Note (optional)</label>
+            <input id="note" type="text" placeholder="Coffee / Salary / Taxi..." />
+          </div>
+
+          <button id="addBtn" class="primary" type="button">Add</button>
+          <div class="hint" id="addHint">Add income or expense. It will appear in history.</div>
+        </div>
+      </div>
+
+      <!-- PRO -->
+      <div id="proBox" class="section proBox">
+        <div class="sectionTitle">
+          <span id="sPro">PRO</span>
+          <span class="pill" id="proStatePill">LOCKED</span>
+        </div>
+
+        <div id="proLocked" class="proLock">
+          <div class="hint" id="proHint">
+            Unlock PRO for $3. Write to <span class="linkStrong">@xarm0</span> to get a promo code.
+          </div>
+          <input id="promo" placeholder="MF-001" />
+          <button id="unlockBtn" class="primary" type="button">Unlock PRO</button>
+          <div id="promoMsg" class="msg"></div>
+        </div>
+
+        <div id="proUnlocked" style="display:none">
+          <div class="hint" id="proOnHint" style="margin-bottom:10px">
+            PRO is active on this device ✅
+          </div>
+
+          <div class="toolsRow">
+            <div>
+              <label id="lMonth" for="month">Month filter</label>
+              <input id="month" type="month" />
+              <div class="hint" id="monthHint" style="margin-top:6px">
+                Filter history and stats by month.
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="flex:1"></div>
+              <button id="exportBtn" class="ghost" type="button">Export CSV</button>
+              <button id="clearBtn" class="ghost" type="button">Clear all data</button>
+            </div>
+          </div>
+
+          <div id="barWrap" class="barWrap">
+            <div class="barLegend">
+              <span id="barIn">Income</span>
+              <span id="barOut">Expense</span>
+            </div>
+            <div class="bar">
+              <div id="barIncome" style="width:50%;background:rgba(45,217,123,.75)"></div>
+              <div id="barExpense" style="width:50%;background:rgba(255,91,107,.75)"></div>
+            </div>
+            <div class="hint" id="barHint">Simple month stats (Income vs Expense).</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HISTORY -->
+      <div class="section">
+        <div class="sectionTitle">
+          <span id="sHist">History</span>
+          <span class="pill" id="histPill">Latest</span>
+        </div>
+
+        <div id="historyHint" class="hint" style="margin-bottom:10px">
+          Your latest transactions are shown below.
+        </div>
+
+        <div id="list" class="list"></div>
+      </div>
+
+      <div class="footerNote" id="footerNote">
+        BASE is free. PRO costs $3 via promo code (message <span class="linkStrong">@xarm0</span>).
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  // ======= CONFIG (easy to edit) =======
+  const SELL_USERNAME = "@xarm0"; // change to your Telegram username
+  const PRO_PRICE_TEXT_EN = "$3";
+  const PRO_PRICE_TEXT_RU = "$3";
+
+  // ======= Storage keys =======
+  const LS_TX = "mf_tx_v1";
+  const LS_PRO = "mf_pro_v1";
+  const LS_CUR = "mf_currency_v1";
+
+  // ======= PROMO CODES (200) =======
+  // Generated safely so copy/paste never breaks:
+  const PROMO_CODES = new Set();
+  for (let i = 1; i <= 200; i++) {
+    PROMO_CODES.add("MF-" + String(i).padStart(3, "0"));
+  }
+
+  // ======= i18n =======
+  const T = {
+    en:{
+      sub:"Track income & expenses — simple and private.",
+      balance:"Balance",
+      earned:"Earned",
+      spent:"Spent",
+      left:"Left",
+      balHint:"Your data is stored only on your device.",
+      add:"Add transaction",
+      income:"Income",
+      expense:"Expense",
+      amount:"Amount",
+      currency:"Currency",
+      category:"Category",
+      date:"Date",
+      note:"Note (optional)",
+      addBtn:"Add",
+      addHint:"Add income or expense. It will appear in history.",
+      pro:"PRO",
+      unlock:"Unlock PRO",
+      proHint:(u)=>`Unlock PRO for ${PRO_PRICE_TEXT_EN}. Write to ${u} to get a promo code.`,
+      proOn:"PRO is active on this device ✅",
+      month:"Month filter",
+      monthHint:"Filter history and stats by month.",
+      export:"Export CSV",
+      clear:"Clear all data",
+      hist:"History",
+      histHint:"Your latest transactions are shown below.",
+      latest:"Latest",
+      empty:"No transactions yet. Add your first one above.",
+      invalid:"Invalid code",
+      ok:"PRO activated!",
+      barHint:"Simple month stats (Income vs Expense).",
+      footer:(u)=>`BASE is free. PRO costs ${PRO_PRICE_TEXT_EN} via promo code (message ${u}).`,
+      catIncome:["Salary","Gift","Freelance","Other"],
+      catExpense:["Food","Transport","Home","Shopping","Bills","Other"]
+    },
+    ru:{
+      sub:"Учёт доходов и расходов — просто и приватно.",
+      balance:"Баланс",
+      earned:"Заработал",
+      spent:"Потратил",
+      left:"Осталось",
+      balHint:"Данные хранятся только на вашем устройстве.",
+      add:"Добавить операцию",
+      income:"Доход",
+      expense:"Расход",
+      amount:"Сумма",
+      currency:"Валюта",
+      category:"Категория",
+      date:"Дата",
+      note:"Комментарий (необязательно)",
+      addBtn:"Добавить",
+      addHint:"Добавьте доход или расход — он появится в истории.",
+      pro:"PRO",
+      unlock:"Открыть PRO",
+      proHint:(u)=>`Открыть PRO за ${PRO_PRICE_TEXT_RU}. Напишите ${u}, чтобы получить промокод.`,
+      proOn:"PRO активирован на этом устройстве ✅",
+      month:"Фильтр по месяцу",
+      monthHint:"Фильтрует историю и статистику по месяцу.",
+      export:"Экспорт CSV",
+      clear:"Очистить все данные",
+      hist:"История",
+      histHint:"Ниже показаны последние операции.",
+      latest:"Последние",
+      empty:"Операций пока нет. Добавьте первую выше.",
+      invalid:"Неверный код",
+      ok:"PRO активирован!",
+      barHint:"Статистика за месяц (Доход vs Расход).",
+      footer:(u)=>`BASE бесплатно. PRO за ${PRO_PRICE_TEXT_RU} по промокоду (пишите ${u}).`,
+      catIncome:["Зарплата","Подарок","Подработка","Другое"],
+      catExpense:["Еда","Транспорт","Дом","Покупки","Счета","Другое"]
+    }
+  };
+
+  function langKey(){ return (lang.value === "ru") ? "ru" : "en"; }
+  function tr(){ return T[langKey()]; }
+  function fmt(cur, n){
+    const v = Number(n || 0);
+    return `${cur}${v.toFixed(2)}`;
+  }
+  function todayISO(){
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    const day = String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${day}`;
+  }
+  function monthISO(dISO){
+    return String(dISO).slice(0,7);
+  }
+  function normalizeCode(s){
+    return String(s||"").trim().toUpperCase().replace(/[‐–—−]/g,"-").replace(/\s+/g,"");
+  }
+
+  // ======= State =======
+  let mode = "income"; // income|expense
+  let pro = (localStorage.getItem(LS_PRO) === "1");
+
+  // ======= Init UI basics =======
+  date.value = todayISO();
+
+  // Restore currency
+  const savedCur = localStorage.getItem(LS_CUR);
+  if (savedCur) {
+    currency.value = savedCur;
+    currencyPill.textContent = savedCur;
+  } else {
+    currencyPill.textContent = currency.value;
+  }
+
+  function renderCategories(){
+    const t = tr();
+    const list = (mode === "income") ? t.catIncome : t.catExpense;
+    category.innerHTML = list.map(c => `<option value="${c}">${c}</option>`).join("");
+  }
+
+  function applyLang(){
+    const t = tr();
+    uiSub.textContent = t.sub;
+
+    sBal.textContent = t.balance;
+    lEarned.textContent = t.earned;
+    lSpent.textContent = t.spent;
+    lLeft.textContent = t.left;
+    balHint.textContent = t.balHint;
+
+    sAdd.textContent = t.add;
+    incomeBtn.textContent = t.income;
+    expenseBtn.textContent = t.expense;
+    lAmount.textContent = t.amount;
+    lCurrency.textContent = t.currency;
+    lCategory.textContent = t.category;
+    lDate.textContent = t.date;
+    lNote.textContent = t.note;
+    addBtn.textContent = t.addBtn;
+    addHint.textContent = t.addHint;
+
+    sPro.textContent = t.pro;
+    unlockBtn.textContent = t.unlock;
+    proHint.innerHTML = t.proHint(SELL_USERNAME).replace(SELL_USERNAME, `<span class="linkStrong">${SELL_USERNAME}</span>`);
+    proOnHint.textContent = t.proOn;
+    lMonth.textContent = t.month;
+    monthHint.textContent = t.monthHint;
+    exportBtn.textContent = t.export;
+    clearBtn.textContent = t.clear;
+
+    sHist.textContent = t.hist;
+    historyHint.textContent = t.histHint;
+    histPill.textContent = t.latest;
+
+    footerNote.innerHTML = t.footer(SELL_USERNAME).replace(SELL_USERNAME, `<span class="linkStrong">${SELL_USERNAME}</span>`);
+
+    renderCategories();
+    render();
+    renderProUI();
+  }
+
+  // ======= Data =======
+  function loadTx(){
+    try{
+      const raw = localStorage.getItem(LS_TX);
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    }catch(e){ return []; }
+  }
+  function saveTx(arr){
+    localStorage.setItem(LS_TX, JSON.stringify(arr));
+  }
+
+  function getFilteredTx(all){
+    if(!pro) return all;
+    const m = month.value || "";
+    if(!m) return all;
+    return all.filter(x => monthISO(x.date) === m);
+  }
+
+  // ======= Render =======
+  function render(){
+    const cur = currency.value;
+    currencyPill.textContent = cur;
+
+    const all = loadTx();
+    const data = getFilteredTx(all);
+
+    const earned = data.filter(x=>x.type==="income").reduce((s,x)=>s+Number(x.amount||0),0);
+    const spent = data.filter(x=>x.type==="expense").reduce((s,x)=>s+Number(x.amount||0),0);
+    const left = earned - spent;
+
+    earnedVal.textContent = fmt(cur, earned);
+    spentVal.textContent = fmt(cur, spent);
+    leftVal.textContent = fmt(cur, left);
+
+    // list
+    if(data.length === 0){
+      list.innerHTML = `<div class="hint">${tr().empty}</div>`;
+    } else {
+      const rows = [...data].sort((a,b)=> (b.date+a.id).localeCompare(a.date+b.id));
+      list.innerHTML = rows.map(x=>{
+        const sign = (x.type==="income") ? "+" : "-";
+        const cls = (x.type==="income") ? "good" : "bad";
+        const note = x.note ? `<div class="note">${escapeHtml(x.note)}</div>` : "";
+        return `
+          <div class="item">
+            <div class="itemLeft">
+              <div class="itemTop">
+                <span class="tag">${escapeHtml(x.category)}</span>
+                <span class="date">${escapeHtml(x.date)}</span>
+              </div>
+              ${note}
+            </div>
+            <div class="amt ${cls}">${sign}${fmt(cur, x.amount)}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // PRO bars (only when pro + month selected or not, still show)
+    if(pro){
+      const earnedAll = (month.value ? earned : loadTx().filter(x=>x.type==="income").reduce((s,x)=>s+Number(x.amount||0),0));
+      const spentAll  = (month.value ? spent  : loadTx().filter(x=>x.type==="expense").reduce((s,x)=>s+Number(x.amount||0),0));
+      const total = earnedAll + spentAll;
+      const pIn = total ? Math.round((earnedAll/total)*100) : 50;
+      const pOut = total ? (100 - pIn) : 50;
+
+      barIncome.style.width = `${pIn}%`;
+      barExpense.style.width = `${pOut}%`;
+      barHint.textContent = tr().barHint;
+      barWrap.style.display = "grid";
+    } else {
+      barWrap.style.display = "none";
+    }
+  }
+
+  function renderProUI(){
+    // show/hide pro box (always visible, but locked/unlocked inside)
+    proBox.style.display = "block";
+
+    modePill.textContent = pro ? "PRO" : "BASE";
+    modePill.classList.toggle("proOn", pro);
+
+    proMiniPill.textContent = pro ? "PRO ON" : "PRO";
+    proMiniPill.classList.toggle("proOn", pro);
+
+    proStatePill.textContent = pro ? "UNLOCKED" : "LOCKED";
+    proStatePill.classList.toggle("proOn", pro);
+
+    proLocked.style.display = pro ? "none" : "grid";
+    proUnlocked.style.display = pro ? "block" : "none";
+
+    // Pro features: month filter applies only if pro
+    month.disabled = !pro;
+
+    render();
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[m]));
+  }
+
+  // ======= Actions =======
+  incomeBtn.addEventListener("click", ()=>{
+    mode="income";
+    incomeBtn.classList.add("active");
+    expenseBtn.classList.remove("active");
+    renderCategories();
+  });
+
+  expenseBtn.addEventListener("click", ()=>{
+    mode="expense";
+    expenseBtn.classList.add("active");
+    incomeBtn.classList.remove("active");
+    renderCategories();
+  });
+
+  currency.addEventListener("change", ()=>{
+    localStorage.setItem(LS_CUR, currency.value);
+    render();
+  });
+
+  lang.addEventListener("change", ()=>{
+    applyLang();
+  });
+
+  addBtn.addEventListener("click", ()=>{
+    const amt = Number(amount.value || 0);
+    const dt = (date.value || todayISO());
+    const cat = category.value || "";
+    const nt = (note.value || "").trim();
+
+    if(!amt || amt <= 0){
+      addHint.textContent = (langKey()==="ru") ? "Введите сумму больше 0." : "Enter amount greater than 0.";
+      return;
+    }
+
+    const tx = loadTx();
+    tx.push({
+      id: String(Date.now()),
+      type: mode,
+      amount: amt,
+      date: dt,
+      category: cat,
+      note: nt
+    });
+    saveTx(tx);
+
+    // clear quick fields
+    amount.value = "";
+    note.value = "";
+    date.value = todayISO();
+
+    addHint.textContent = tr().addHint;
+    render();
+  });
+
+  unlockBtn.addEventListener("click", ()=>{
+    const code = normalizeCode(promo.value);
+    if(PROMO_CODES.has(code)){
+      pro = true;
+      localStorage.setItem(LS_PRO, "1");
+      promoMsg.className = "msg ok";
+      promoMsg.textContent = tr().ok;
+      renderProUI();
+    } else {
+      promoMsg.className = "msg err";
+      promoMsg.textContent = tr().invalid;
+    }
+  });
+
+  month.addEventListener("change", ()=>{
+    render();
+  });
+
+  exportBtn.addEventListener("click", ()=>{
+    const all = loadTx();
+    const data = getFilteredTx(all);
+    const cur = currency.value;
+
+    const header = ["type","amount","currency","date","category","note"];
+    const rows = data.map(x=>[
+      x.type,
+      String(x.amount),
+      cur,
+      x.date,
+      x.category || "",
+      (x.note || "").replace(/\n/g," ")
+    ]);
+
+    const csv = [header, ...rows]
+      .map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(","))
+      .join("\n");
+
+    const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const suffix = (pro && month.value) ? `_${month.value}` : "";
+    a.href = url;
+    a.download = `myfinanse${suffix}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  clearBtn.addEventListener("click", ()=>{
+    const ok = confirm(langKey()==="ru" ? "Точно очистить все данные?" : "Clear all data?");
+    if(!ok) return;
+    localStorage.removeItem(LS_TX);
+    render();
+  });
+
+  // ======= Start =======
+  applyLang();
+  renderProUI();
+</script>
+</body>
+</html>
